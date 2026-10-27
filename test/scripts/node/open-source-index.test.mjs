@@ -83,6 +83,18 @@ test("open-source check reads the Git index and build-context env examples", () 
     fs.rmSync(internalLink);
     execFileSync("git", ["add", "-u"], { cwd: root });
 
+    const internalPackage = path.join(root, "internal-package.md");
+    const internalPackageManager = ["t", "npm"].join("");
+    const internalPackageScope = `@${["ant", "agent"].join("")}/runtime`;
+    fs.writeFileSync(internalPackage, `${internalPackageManager} add ${internalPackageScope}\n`);
+    execFileSync("git", ["add", "internal-package.md"], { cwd: root });
+    const internalPackageResult = spawnSync(process.execPath, [checker], { cwd: root, encoding: "utf8" });
+    assert.equal(internalPackageResult.status, 1);
+    assert.match(internalPackageResult.stderr, /internal-package\.md: internal package manager or scope/);
+    assert.doesNotMatch(internalPackageResult.stderr, new RegExp(internalPackageScope));
+    fs.rmSync(internalPackage);
+    execFileSync("git", ["add", "-u"], { cwd: root });
+
     const privateNetwork = path.join(root, "private-network.md");
     const privateNetworkFixture = ["192", "168", "10", "20"].join(".");
     fs.writeFileSync(privateNetwork, `service=http://${privateNetworkFixture}:8080\n`);

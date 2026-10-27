@@ -25,6 +25,10 @@ const runtimeBuilder = fs.readFileSync(runtimeBuilderPath, "utf8");
 if (!/^playwright==1\.58\.0$/m.test(runtimeConstraints)
   || !/^beautifulsoup4==4\.13\.3$/m.test(runtimeConstraints)
   || !/^PySocks==1\.7\.1$/m.test(runtimeConstraints)
+  || !/^annotated-doc==0\.0\.5$/m.test(runtimeConstraints)
+  || !/^et-xmlfile==2\.0\.0$/m.test(runtimeConstraints)
+  || !/^lxml==6\.1\.3$/m.test(runtimeConstraints)
+  || !/^socksio==1\.0\.0$/m.test(runtimeConstraints)
   || /(?:--index-url|--extra-index-url|https?:\/\/|alipay|antfin|antgroup)/i.test(runtimeConstraints)) {
   console.error("UI 测试 Runtime constraints 未锁定关键版本，或包含私有/外部包源覆盖。");
   process.exit(1);

@@ -58,13 +58,13 @@
     "fflate": "^0.8.3",
     "knex": "^3.1.2",
     "lucide-react": "^0.468.0",
-    "multer": "^2.0.2",
+    "multer": "2.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tar": "^7.4.3",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3",
-    "vite": "^6.0.3",
+    "vite": "6.4.5",
     "ws": "^8.21.0"
   },
   "devDependencies": {
@@ -78,5 +78,8 @@
     "@types/react-dom": "^18.3.1",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1"
+  },
+  "overrides": {
+    "body-parser": "1.20.9"
   }
 }

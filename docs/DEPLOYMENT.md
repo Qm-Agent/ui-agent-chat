@@ -49,6 +49,11 @@ curl -fsS http://127.0.0.1:8787/api/health
 
 镜像构建需要访问公开软件源；运行阶段不再执行依赖安装或浏览器下载。企业环境可通过 Dockerfile 已声明的 build args 替换为经过审核的公共镜像源，但不得把源凭据写进构建参数、镜像层或日志。
 
+网络较慢时可增加 `PIP_DEFAULT_TIMEOUT`、`PIP_RETRIES` 和
+`PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT`，或通过 `APT_MIRROR`、
+`NPM_REGISTRY`、`PIP_INDEX_URL` 使用组织允许的公共镜像。它们只影响构建阶段；
+不要在这些参数中放入带账号、Token 或临时签名的 URL。
+
 ## 数据库与文件存储
 
 公开版没有 MySQL、PostgreSQL、Redis、对象存储或云数据库依赖。所有结构化状态保存在一个本地 SQLite 文件中，大体积证据保存在 `UI_AGENT_DATA_DIR` 下的会话目录。

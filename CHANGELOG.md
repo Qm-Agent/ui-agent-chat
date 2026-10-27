@@ -8,8 +8,23 @@
 - browser-use 模型配置统一为 `BU_OPENAI_API_BASE`、`BU_OPENAI_API_KEY` 与可配置视觉模型名，支持公开 OpenAI-compatible 服务。
 - 清理内部模型网关兼容变量、历史技能记录和执行样例，补齐快速开始、功能使用、部署与客户端构建文档。
 - 升级并固化 browser-use 3.1.6 wheel 的来源、MIT 许可、哈希校验与 Runtime 构建路径；公开模型默认改为 `qwen3.7-plus`。
+- Docker 公开构建增加可配置的 pip 重试、读超时和 Playwright 下载超时，降低普通外网下载大 wheel 或浏览器时的偶发失败。
+- 桌面 Runtime 构建对 GitHub Release 与 Python 官方文件源使用直连回退，避免本机代理导致便携 Python 和 bootstrap wheel 长时间无进展。
+- 锁定公开 Runtime 的完整 Python 依赖闭包，并升级上传、请求解析和前端构建依赖，生产依赖审计无已知漏洞。
 - GUI Runtime 包统一使用公开命名空间 `@uiwarden/*` 和 npm/pnpm 工作流，移除内部包管理器与内部 scope 引用。
 - 验证 Node 22 类型检查、218 个单元测试、公开源码索引、桌面资源净化和 Python Runtime 补丁测试。
+
+### 验证与安装包
+
+- macOS arm64 安装包：`UIWarden-0.12.5-arm64.dmg`、`UIWarden-0.12.5-arm64.zip`。
+- 已验证 Docker arm64 公开构建、容器健康检查、SQLite 初始化、`pip check`、生产依赖审计和包内 Chromium 启动。
+- 已验证 macOS arm64 DMG checksum、Finder 安装布局、应用深度签名、随包 Server、Node/SQLite ABI、Python 3.11.17、browser-use 3.1.6、Playwright Chromium/Firefox、画中画和内置浏览器预览。
+
+### 已知限制
+
+- 当前 macOS 包仅使用本地 ad-hoc 签名，未进行 Apple Developer ID 签名与公证，不可直接作为面向公众的正式分发包。
+- 本轮未执行 macOS x64、Windows 安装包和外部在线模型端到端验收。
+- browser-use wheel 随包再分发前仍需发布方完成许可证与分发合规确认。
 
 ## 0.12.4 - 2026-10-15
 

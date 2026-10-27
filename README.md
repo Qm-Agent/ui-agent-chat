@@ -67,8 +67,13 @@ docker build \
   --build-arg APT_MIRROR=mirrors.aliyun.com \
   --build-arg NPM_REGISTRY=https://registry.npmjs.org/ \
   --build-arg PIP_INDEX_URL=https://pypi.org/simple/ \
+  --build-arg PIP_DEFAULT_TIMEOUT=180 \
+  --build-arg PIP_RETRIES=10 \
   -t uiwarden:local .
 ```
+
+`PIP_DEFAULT_TIMEOUT`、`PIP_RETRIES` 与 `PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT`
+只控制构建阶段的公开依赖下载容错，不会写入用户凭据或改变运行时网络行为。
 
 运行时不执行 `npm install`、`pip install` 或浏览器下载。Agent 任务仍需用户自己的执行底座、账号和模型配置。
 

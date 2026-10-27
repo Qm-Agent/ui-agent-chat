@@ -119,11 +119,23 @@ function download(url, destination) {
   const partial = `${destination}.partial`;
   fs.mkdirSync(path.dirname(destination), { recursive: true });
   const curl = platform === "win32" ? "curl.exe" : "curl";
+  const directHosts = [
+    process.env.NO_PROXY,
+    process.env.no_proxy,
+    new URL(url).hostname,
+    "github.com",
+    "objects.githubusercontent.com",
+    "release-assets.githubusercontent.com",
+    "files.pythonhosted.org"
+  ].filter(Boolean).join(",");
   run(curl, [
     "--fail", "--location", "--show-error", "--retry", "8", "--retry-all-errors",
     "--connect-timeout", "30", "--speed-limit", "1024", "--speed-time", "120",
     "--continue-at", "-", "--output", partial, url
-  ], { timeout: 45 * 60_000 });
+  ], {
+    timeout: 45 * 60_000,
+    env: { NO_PROXY: directHosts, no_proxy: directHosts }
+  });
   fs.renameSync(partial, destination);
 }
 

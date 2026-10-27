@@ -19,6 +19,7 @@ const sensitiveContentRules = [
   ["private key", /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/],
   ["credential-like sk token", /\bsk-[A-Za-z0-9_-]{20,}\b/],
   ["credential-like AK token", /\bAK[A-Za-z0-9]{10,62}\b/],
+  ["internal package manager or scope", new RegExp(`(?:\\b${["t", "npm"].join("")}\\b|@${["ant", "agent"].join("")}\\/)`, "i")],
   ["private network address", /(?:^|[^0-9])(?:10\.(?:\d{1,3}\.){2}\d{1,3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})(?:[^0-9]|$)/],
   ["personal absolute path", /(?:\/Users\/qiming\/|\/home\/qiming\/|[A-Za-z]:\\Users\\qiming\\)/i]
 ];
@@ -65,6 +66,7 @@ try {
     ["project", "alipay", "com"],
     ["theta", "alipay", "com"],
     ["code", "alipay", "com"],
+    ["", "dtagi", "cn"],
     ["", "alipay", "net"],
     ["", "antgroup-inc", "cn"]
   ].map((parts) => parts.map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[.]")).join("|");

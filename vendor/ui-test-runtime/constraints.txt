@@ -4,6 +4,7 @@
 # browser-use 3.1.6 wheel. The browser-use wheel itself is installed from
 # vendor/browser-use and is never resolved from PyPI.
 annotated-types==0.7.0
+annotated-doc==0.0.5
 antlr4-python3-runtime==4.9.3
 anyio==4.14.1
 attrs==26.1.0
@@ -17,6 +18,7 @@ cryptography==49.0.0
 distro==1.9.0
 dotenv==0.9.9
 easydict==1.13
+et-xmlfile==2.0.0
 filetype==1.2.0
 google-ai-generativelanguage==0.6.18
 google-api-core==2.31.0
@@ -43,6 +45,7 @@ langchain-openai==0.3.12
 langchain-text-splitters==0.3.11
 langsmith==0.3.45
 loguru==0.7.3
+lxml==6.1.3
 markdown-it-py==4.2.0
 mcp==1.27.2
 mdurl==0.1.2
@@ -77,6 +80,7 @@ rich==15.0.0
 rpds-py==2026.6.3
 shellingham==1.5.4
 sniffio==1.3.1
+socksio==1.0.0
 soupsieve==2.8.4
 SQLAlchemy==2.0.51
 sse-starlette==3.4.5

@@ -8,10 +8,11 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const require = createRequire(path.join(root, "desktop", "package.json"));
 const asar = require("@electron/asar");
-const appPath = process.argv[2] || [
+const appPathInput = process.argv[2] || [
   path.join(root, "desktop", "release", "mac-arm64", "UIWarden.app"),
   path.join(root, "desktop", "release", "mac", "UIWarden.app")
 ].find((candidate) => fs.existsSync(candidate));
+const appPath = appPathInput ? path.resolve(appPathInput) : undefined;
 
 assert.ok(appPath && fs.existsSync(appPath), "未找到 UIWarden.app，请先执行桌面打包");
 const resources = path.join(appPath, "Contents", "Resources");

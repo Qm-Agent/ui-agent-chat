@@ -45,7 +45,15 @@ RUN sed -i "s|deb.debian.org|${APT_MIRROR}|g" /etc/apt/sources.list.d/debian.sou
     && rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/ui-test-assistant-venv
 ARG PIP_INDEX_URL=https://pypi.org/simple/
-RUN /opt/ui-test-assistant-venv/bin/pip install --index-url "$PIP_INDEX_URL" playwright==1.58.0
+ARG PIP_DEFAULT_TIMEOUT=180
+ARG PIP_RETRIES=10
+COPY vendor/ui-test-runtime/constraints.txt /tmp/ui-test-runtime-constraints.txt
+RUN /opt/ui-test-assistant-venv/bin/pip install \
+      --index-url "$PIP_INDEX_URL" \
+      --timeout "$PIP_DEFAULT_TIMEOUT" \
+      --retries "$PIP_RETRIES" \
+      --constraint /tmp/ui-test-runtime-constraints.txt \
+      playwright==1.58.0
 RUN DEBIAN_FRONTEND=noninteractive /opt/ui-test-assistant-venv/bin/python -m playwright install-deps chromium
 ARG UIWARDEN_BROWSER_USE_WHEEL_SHA256=
 ARG UIWARDEN_BROWSER_USE_REDISTRIBUTION_APPROVED=false
@@ -54,17 +62,31 @@ COPY vendor/browser-use/browser_use-3.1.6-*.whl /tmp/browser-use/
 COPY scripts/verify_browser_use_wheel.py /tmp/verify_browser_use_wheel.py
 RUN UIWARDEN_BROWSER_USE_WHEEL_SHA256="$UIWARDEN_BROWSER_USE_WHEEL_SHA256" UIWARDEN_BROWSER_USE_REDISTRIBUTION_APPROVED="$UIWARDEN_BROWSER_USE_REDISTRIBUTION_APPROVED" UIWARDEN_PUBLIC_RELEASE="$UIWARDEN_PUBLIC_RELEASE" \
       python3 /tmp/verify_browser_use_wheel.py /tmp/browser-use \
-    && /opt/ui-test-assistant-venv/bin/pip install --index-url "$PIP_INDEX_URL" /tmp/browser-use/browser_use-3.1.6-*.whl \
+    && /opt/ui-test-assistant-venv/bin/pip install \
+      --index-url "$PIP_INDEX_URL" \
+      --timeout "$PIP_DEFAULT_TIMEOUT" \
+      --retries "$PIP_RETRIES" \
+      --constraint /tmp/ui-test-runtime-constraints.txt \
+      /tmp/browser-use/browser_use-3.1.6-*.whl \
       openpyxl==3.1.5 python-docx==1.2.0 \
     && /opt/ui-test-assistant-venv/bin/python -c "import importlib.metadata as m; assert m.version('browser-use') == '3.1.6'" \
     && rm -rf /tmp/browser-use /tmp/verify_browser_use_wheel.py
 ARG PLAYWRIGHT_DOWNLOAD_HOST=
 ARG PLAYWRIGHT_CHROMIUM_DOWNLOAD_HOST=
-RUN if [ -n "$PLAYWRIGHT_DOWNLOAD_HOST" ]; then export PLAYWRIGHT_DOWNLOAD_HOST; fi \
+ARG PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT=180000
+RUN export PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT \
+    && if [ -n "$PLAYWRIGHT_DOWNLOAD_HOST" ]; then export PLAYWRIGHT_DOWNLOAD_HOST; fi \
     && if [ -n "$PLAYWRIGHT_CHROMIUM_DOWNLOAD_HOST" ]; then export PLAYWRIGHT_CHROMIUM_DOWNLOAD_HOST; fi \
     && /opt/ui-test-assistant-venv/bin/python -m playwright install chromium
-RUN /opt/ui-test-assistant-venv/bin/pip install --index-url "$PIP_INDEX_URL" socksio 'httpx[socks]' \
-    && /opt/ui-test-assistant-venv/bin/python -c "import browser_use, dotenv, yaml, omegaconf, openpyxl, docx"
+RUN /opt/ui-test-assistant-venv/bin/pip install \
+      --index-url "$PIP_INDEX_URL" \
+      --timeout "$PIP_DEFAULT_TIMEOUT" \
+      --retries "$PIP_RETRIES" \
+      --constraint /tmp/ui-test-runtime-constraints.txt \
+      socksio 'httpx[socks]' \
+    && /opt/ui-test-assistant-venv/bin/python -m pip check \
+    && /opt/ui-test-assistant-venv/bin/python -c "import browser_use, dotenv, yaml, omegaconf, openpyxl, docx" \
+    && rm /tmp/ui-test-runtime-constraints.txt
 COPY scripts/patch-browser-use.py /tmp/patch-browser-use.py
 RUN /opt/ui-test-assistant-venv/bin/python /tmp/patch-browser-use.py \
     && rm /tmp/patch-browser-use.py
