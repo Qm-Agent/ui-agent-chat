@@ -1,0 +1,11 @@
+change_id: native-desktop-automation
+latest_run: "20260711121250"
+status: COMPLETE_WITH_RESIDUAL_RISK
+assets:
+  design: run-20260711121250/agent-in-loop-test-design.md
+  analysis: run-20260711121250/test-analysis.md
+  cases: run-20260711121250/test-cases.md
+  traceability: run-20260711121250/traceability-matrix.md
+reports:
+  execution: test-reports/execution/native-desktop-automation/20260711121250
+  audit: test-reports/gate/agent-audit/native-desktop-automation-agent-audit-20260711121250.md

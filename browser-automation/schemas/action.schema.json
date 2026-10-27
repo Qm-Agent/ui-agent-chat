@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dt-gui-agent.local/schemas/browser/action.schema.json",
+  "title": "dt-gui-browser recorded atomic action",
+  "type": "object",
+  "required": ["version", "actionId", "sessionId", "sequence", "performedAt", "kind", "targetId"],
+  "properties": {
+    "version": { "const": 1 },
+    "actionId": { "type": "string", "pattern": "^action-[0-9a-f-]{16,}$" },
+    "sessionId": { "type": "string", "pattern": "^browser-[0-9a-f-]{16,}$" },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "performedAt": { "type": "string", "format": "date-time" },
+    "kind": { "enum": ["navigate", "back", "forward", "reload", "click", "set-value", "type-text", "select-option", "hover", "key", "scroll", "drag", "upload-file"] },
+    "targetId": { "type": "string", "minLength": 1 },
+    "snapshotId": { "type": "string" },
+    "elementId": { "type": "string" },
+    "targetName": { "type": "string" },
+    "value": false,
+    "result": { "type": "object" }
+  },
+  "additionalProperties": true
+}

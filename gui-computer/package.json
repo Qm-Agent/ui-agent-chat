@@ -1,0 +1,12 @@
+{
+  "name": "gui-computer",
+  "version": "0.3.2",
+  "description": "Standalone controllable browser for GUI automation",
+  "author": "DT GUI Agent",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "start": "../desktop/node_modules/.bin/electron .",
+    "pack:mac": "../desktop/node_modules/.bin/electron-builder --mac dmg zip --config electron-builder.json"
+  }
+}

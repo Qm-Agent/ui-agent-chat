@@ -1,0 +1,3 @@
+Codex UI Benchmark Download
+scenario=B04B
+content=deterministic-local-fixture

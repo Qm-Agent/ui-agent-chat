@@ -1,0 +1,31 @@
+#!/bin/sh
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+RUNTIME=${DT_GUI_BROWSER_NODE:-node}
+
+# DTCoder's long-lived daemon does not inherit per-turn environment variables.
+# These trusted global flags bind the packaged Node and Runtime home explicitly.
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --node)
+      [ "$#" -ge 2 ] || { echo "--node requires a path" >&2; exit 2; }
+      RUNTIME=$2
+      shift 2
+      ;;
+    --runtime-home)
+      [ "$#" -ge 2 ] || { echo "--runtime-home requires a path" >&2; exit 2; }
+      DT_GUI_BROWSER_HOME=$2
+      export DT_GUI_BROWSER_HOME
+      shift 2
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [ -n "${DT_GUI_BROWSER_NODE:-}" ] || [ "$RUNTIME" != "node" ]; then
+  ELECTRON_RUN_AS_NODE=1 exec "$RUNTIME" "$SCRIPT_DIR/../cli.mjs" "$@"
+fi
+exec "$RUNTIME" "$SCRIPT_DIR/../cli.mjs" "$@"

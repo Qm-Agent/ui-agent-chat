@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uiwarden.local/schemas/native-automation/protocol-v1.json",
+  "title": "UIWarden Native Automation Protocol",
+  "type": "object",
+  "required": ["version"],
+  "properties": {
+    "version": { "const": 1 }
+  },
+  "$defs": {
+    "providerId": {
+      "enum": ["mock", "macos-accessibility", "windows-ui-automation"]
+    },
+    "controlMode": {
+      "enum": ["observe", "agent-control", "human-control"]
+    },
+    "deliveryMode": {
+      "enum": ["foreground-compatible", "background-safe"]
+    },
+    "appSelector": {
+      "type": "object",
+      "required": ["value"],
+      "properties": {
+        "kind": { "enum": ["bundle-id", "path", "name", "process-id"] },
+        "value": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "bounds": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "element": {
+      "type": "object",
+      "required": ["elementId", "role", "secure", "enabled", "actions"],
+      "properties": {
+        "elementId": { "type": "string", "minLength": 1 },
+        "role": { "type": "string" },
+        "name": { "type": "string" },
+        "value": { "type": ["string", "null"] },
+        "secure": { "type": "boolean" },
+        "enabled": { "type": "boolean" },
+        "actions": { "type": "array", "items": { "type": "string" } },
+        "focused": { "type": "boolean" },
+        "bounds": { "$ref": "#/$defs/bounds" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

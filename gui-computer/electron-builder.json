@@ -1,0 +1,26 @@
+{
+  "appId": "com.dt.gui.computer",
+  "productName": "gui-computer",
+  "electronVersion": "38.8.6",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "main.cjs",
+    "preload.cjs",
+    "browser.html",
+    "browser.css",
+    "browser.js",
+    "build/icon.png",
+    "package.json"
+  ],
+  "extraResources": [
+    { "from": "../desktop/embedded-browser.cjs", "to": "embedded-browser.cjs" }
+  ],
+  "mac": {
+    "category": "public.app-category.productivity",
+    "icon": "build/icon.png",
+    "target": ["dmg", "zip"]
+  },
+  "npmRebuild": false
+}

@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codex UI Complex Benchmark</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      color-scheme: light;
+      --ink: #17202a;
+      --muted: #5d6978;
+      --line: #cbd3dc;
+      --panel: #ffffff;
+      --canvas: #eef2f5;
+      --blue: #155eef;
+      --green: #147d43;
+      --red: #b42318;
+    }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+    button, input, select, textarea {
+      min-height: 36px;
+      border: 1px solid #9ba7b4;
+      border-radius: 6px;
+      background: #fff;
+      color: inherit;
+      font: inherit;
+      letter-spacing: 0;
+    }
+    button { padding: 7px 12px; cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid rgba(21, 94, 239, 0.25);
+      outline-offset: 1px;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 58px;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    header h1 { margin: 0; font-size: 18px; }
+    header output { color: var(--muted); }
+    nav {
+      display: flex;
+      gap: 4px;
+      padding: 12px 24px 0;
+      background: #fff;
+    }
+    nav button[aria-selected="true"] {
+      border-color: var(--blue);
+      color: #fff;
+      background: var(--blue);
+    }
+    main { width: min(1100px, calc(100% - 32px)); margin: 16px auto 60px; }
+    section[hidden] { display: none; }
+    .sectionHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .sectionHeader h2 { margin: 0; font-size: 20px; }
+    .panel {
+      margin-bottom: 16px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    .panel h3 { margin: 0 0 14px; font-size: 16px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .field { display: grid; gap: 6px; }
+    .field input, .field select, .field textarea { width: 100%; padding: 7px 10px; }
+    .field textarea { min-height: 86px; resize: vertical; }
+    .choiceRow { display: flex; flex-wrap: wrap; gap: 18px; margin: 16px 0; }
+    .choiceRow label { display: inline-flex; align-items: center; gap: 7px; }
+    .actionRow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .primary { border-color: var(--blue); color: #fff; background: var(--blue); }
+    .danger { border-color: var(--red); color: var(--red); }
+    .result {
+      display: block;
+      min-height: 42px;
+      margin-top: 16px;
+      padding: 10px 12px;
+      border-left: 4px solid #7a8794;
+      background: #f1f4f7;
+      white-space: pre-wrap;
+    }
+    .result[data-state="success"] { border-color: var(--green); background: #edf8f1; }
+    .result[data-state="error"] { border-color: var(--red); background: #fff1f0; }
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) 180px auto;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .toolbar input, .toolbar select { width: 100%; padding: 7px 10px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border-bottom: 1px solid #dce2e8; text-align: left; }
+    th button { min-height: 30px; padding: 4px 8px; border: 0; font-weight: 600; }
+    tbody tr[aria-selected="true"] { background: #eaf2ff; }
+    td input { width: 100%; padding: 6px 8px; }
+    .pager { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+    .tabList { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+    .tabList button { border-bottom-right-radius: 0; border-bottom-left-radius: 0; }
+    .tabList button[aria-selected="true"] { border-color: var(--green); color: #fff; background: var(--green); }
+    .tabPanel { min-height: 76px; padding: 16px 4px 4px; }
+    .dragGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .dragItem, .dropZone {
+      display: grid;
+      min-height: 90px;
+      place-items: center;
+      border: 2px dashed #7a8794;
+      border-radius: 8px;
+      background: #f7f9fb;
+    }
+    .dragItem { border-style: solid; cursor: grab; }
+    .dropZone[data-dropped="true"] { border-color: var(--green); background: #edf8f1; }
+    details { padding: 10px 0; border-bottom: 1px solid #dce2e8; }
+    summary { cursor: pointer; font-weight: 600; }
+    iframe { width: 100%; height: 190px; border: 1px solid var(--line); border-radius: 6px; }
+    #shadowHost { display: block; min-height: 64px; }
+    dialog {
+      width: min(430px, calc(100% - 32px));
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    dialog::backdrop { background: rgba(23, 32, 42, 0.28); }
+    dialog h3 { margin-top: 0; }
+    .spacer { height: 520px; }
+    #deepTarget { padding: 18px; border: 2px solid var(--blue); background: #eef4ff; }
+    @media (max-width: 720px) {
+      header { align-items: flex-start; flex-direction: column; padding: 12px 16px; }
+      nav { overflow-x: auto; padding: 10px 16px; }
+      main { width: min(100% - 20px, 1100px); }
+      .grid, .dragGrid, .toolbar { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Codex UI 复杂原子能力基准</h1>
+    <output id="globalStatus" data-testid="global-status">READY</output>
+  </header>
+  <nav aria-label="基准场景">
+    <button type="button" role="tab" data-route="form" aria-selected="true">复杂表单</button>
+    <button type="button" role="tab" data-route="table" aria-selected="false">动态表格</button>
+    <button type="button" role="tab" data-route="components" aria-selected="false">复合组件</button>
+    <button type="button" role="tab" data-route="diagnostics" aria-selected="false">诊断与文件</button>
+  </nav>
+
+  <main>
+    <section id="route-form" data-route-panel="form">
+      <div class="sectionHeader">
+        <h2>复杂表单</h2>
+        <span>BENCH-B01</span>
+      </div>
+      <form id="profileForm" class="panel">
+        <div class="grid">
+          <label class="field" for="name">
+            姓名
+            <input id="name" data-testid="form-name" name="name" autocomplete="off" required>
+          </label>
+          <label class="field" for="email">
+            邮箱
+            <input id="email" data-testid="form-email" name="email" type="email" required>
+          </label>
+          <label class="field" for="priority">
+            优先级
+            <select id="priority" data-testid="form-priority" name="priority">
+              <option value="low">低</option>
+              <option value="normal" selected>普通</option>
+              <option value="high">高</option>
+            </select>
+          </label>
+          <label class="field" for="dueDate">
+            计划日期
+            <input id="dueDate" data-testid="form-date" name="dueDate" type="date" required>
+          </label>
+        </div>
+        <fieldset class="choiceRow">
+          <legend>运行模式</legend>
+          <label><input type="radio" name="mode" value="semantic" checked>语义</label>
+          <label><input type="radio" name="mode" value="visual">视觉</label>
+          <label><input id="agreement" data-testid="form-agreement" type="checkbox" required>确认本地执行</label>
+        </fieldset>
+        <label class="field" for="notes">
+          备注
+          <textarea id="notes" data-testid="form-notes" name="notes"></textarea>
+        </label>
+        <div class="actionRow">
+          <button class="primary" data-testid="form-submit" type="submit">提交本地表单</button>
+          <button data-testid="form-reset" type="reset">重置</button>
+        </div>
+        <output id="formResult" class="result" data-testid="form-result">等待提交</output>
+      </form>
+    </section>
+
+    <section id="route-table" data-route-panel="table" hidden>
+      <div class="sectionHeader">
+        <h2>动态表格</h2>
+        <span>BENCH-B02</span>
+      </div>
+      <div class="panel">
+        <div class="toolbar">
+          <input id="tableSearch" data-testid="table-search" aria-label="筛选任务" placeholder="按名称筛选">
+          <select id="statusFilter" data-testid="status-filter" aria-label="状态筛选">
+            <option value="all">全部状态</option>
+            <option value="待处理">待处理</option>
+            <option value="已完成">已完成</option>
+          </select>
+          <button id="asyncLoad" data-testid="async-load" type="button">异步刷新</button>
+        </div>
+        <table aria-label="任务数据">
+          <thead>
+            <tr>
+              <th scope="col">选择</th>
+              <th scope="col"><button id="sortName" data-testid="sort-name" type="button">任务名称</button></th>
+              <th scope="col">负责人</th>
+              <th scope="col">状态</th>
+              <th scope="col">分值</th>
+            </tr>
+          </thead>
+          <tbody id="taskRows"></tbody>
+        </table>
+        <div class="pager">
+          <button id="previousPage" data-testid="previous-page" type="button">上一页</button>
+          <output id="pageStatus" data-testid="page-status">1 / 2</output>
+          <button id="nextPage" data-testid="next-page" type="button">下一页</button>
+        </div>
+        <div class="actionRow">
+          <button id="editSelected" data-testid="edit-selected" type="button">编辑选中项</button>
+          <button id="saveSelected" class="primary" data-testid="save-selected" type="button">保存选中项</button>
+        </div>
+        <output id="tableResult" class="result" data-testid="table-result">等待操作</output>
+      </div>
+    </section>
+
+    <section id="route-components" data-route-panel="components" hidden>
+      <div class="sectionHeader">
+        <h2>复合组件</h2>
+        <span>BENCH-B03</span>
+      </div>
+      <div class="panel">
+        <h3>Tab 与弹窗</h3>
+        <div class="tabList" role="tablist" aria-label="详情类型">
+          <button type="button" role="tab" data-inner-tab="overview" aria-selected="true">概览</button>
+          <button type="button" role="tab" data-inner-tab="evidence" aria-selected="false">证据</button>
+        </div>
+        <div id="inner-overview" class="tabPanel" role="tabpanel">概览内容：结构化操作。</div>
+        <div id="inner-evidence" class="tabPanel" role="tabpanel" hidden>证据内容：截图、Trace、Rep。</div>
+        <div class="actionRow">
+          <button id="openModal" data-testid="open-modal" type="button">打开确认弹窗</button>
+          <button id="openJsConfirm" data-testid="open-js-confirm" type="button">打开 JS Confirm</button>
+          <button id="openPrompt" data-testid="open-prompt" type="button">打开 JS Prompt</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>拖拽与键盘</h3>
+        <div class="dragGrid">
+          <div id="dragItem" class="dragItem" data-testid="drag-source" draggable="true">拖动 BENCH-ITEM</div>
+          <div id="dropZone" class="dropZone" data-testid="drop-target"
+               aria-label="拖放目标" aria-dropeffect="move">拖到这里</div>
+        </div>
+        <label class="field" for="shortcutField">
+          快捷键输入区
+          <input id="shortcutField" data-testid="shortcut-field" value="alpha beta gamma">
+        </label>
+        <output id="componentResult" class="result" data-testid="component-result">等待操作</output>
+      </div>
+
+      <div class="panel">
+        <h3>Shadow DOM 与同源 iframe</h3>
+        <div id="shadowHost" data-testid="shadow-host"></div>
+        <iframe title="复杂基准 iframe" src="codex-ui-complex-frame.html"></iframe>
+      </div>
+
+      <div class="panel">
+        <h3>折叠区域</h3>
+        <details>
+          <summary>展开一级详情</summary>
+          <p>一级详情已展开。</p>
+        </details>
+        <details>
+          <summary>展开二级详情</summary>
+          <p>二级详情已展开。</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="route-diagnostics" data-route-panel="diagnostics" hidden>
+      <div class="sectionHeader">
+        <h2>诊断与文件</h2>
+        <span>BENCH-B04</span>
+      </div>
+      <div class="panel">
+        <div class="actionRow">
+          <button id="consoleBurst" data-testid="console-burst" type="button">生成控制台日志</button>
+          <button id="newTab" data-testid="new-tab" type="button">打开结果标签页</button>
+          <a id="downloadLink" data-testid="download-link" download="codex-ui-benchmark.txt"
+             href="codex-ui-benchmark-download.txt">下载测试文件</a>
+        </div>
+        <label class="field" for="uploadInput">
+          上传本地测试文件
+          <input id="uploadInput" data-testid="upload-input" type="file">
+        </label>
+        <output id="diagnosticResult" class="result" data-testid="diagnostic-result">等待操作</output>
+      </div>
+      <div class="spacer" aria-hidden="true"></div>
+      <div id="deepTarget" data-testid="deep-target">BENCH-B04-SCROLL-TARGET</div>
+    </section>
+  </main>
+
+  <dialog id="confirmDialog" aria-labelledby="dialogTitle">
+    <h3 id="dialogTitle">本地确认弹窗</h3>
+    <p>此操作只更新当前夹具状态。</p>
+    <div class="actionRow">
+      <button id="cancelDialog" type="button">取消</button>
+      <button id="confirmDialogAction" class="primary" type="button">确认</button>
+    </div>
+  </dialog>
+
+  <script>
+    const globalStatus = document.querySelector("#globalStatus");
+    const routes = [...document.querySelectorAll("[data-route]")];
+    const panels = [...document.querySelectorAll("[data-route-panel]")];
+    const tasks = [
+      { name: "Alpha 审查", owner: "Ada", status: "待处理", score: 82 },
+      { name: "Bravo 回归", owner: "Lin", status: "已完成", score: 91 },
+      { name: "Charlie 巡检", owner: "Ming", status: "待处理", score: 76 },
+      { name: "Delta 诊断", owner: "Yu", status: "已完成", score: 95 },
+      { name: "Echo 追踪", owner: "Qin", status: "待处理", score: 88 },
+      { name: "Foxtrot 复核", owner: "Han", status: "已完成", score: 90 }
+    ];
+    let page = 1;
+    let ascending = true;
+    let selectedTask = "";
+    let editing = false;
+
+    function activateRoute(route, pushHistory = true) {
+      routes.forEach((button) => button.setAttribute("aria-selected", String(button.dataset.route === route)));
+      panels.forEach((panel) => { panel.hidden = panel.dataset.routePanel !== route; });
+      globalStatus.textContent = `ROUTE:${route}`;
+      if (pushHistory) history.pushState({ route }, "", `#${route}`);
+    }
+
+    routes.forEach((button) => button.addEventListener("click", () => activateRoute(button.dataset.route)));
+    addEventListener("popstate", (event) => activateRoute(event.state?.route || location.hash.slice(1) || "form", false));
+    activateRoute(location.hash.slice(1) || "form", false);
+
+    document.querySelector("#profileForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const result = document.querySelector("#formResult");
+      if (!form.reportValidity()) {
+        result.dataset.state = "error";
+        result.textContent = "ERROR:FORM-INVALID";
+        return;
+      }
+      const data = new FormData(form);
+      result.dataset.state = "success";
+      result.textContent = [
+        "SUCCESS:FORM",
+        `name=${data.get("name")}`,
+        `email=${data.get("email")}`,
+        `priority=${data.get("priority")}`,
+        `date=${data.get("dueDate")}`,
+        `mode=${data.get("mode")}`,
+        `notes=${data.get("notes")}`
+      ].join("|");
+      globalStatus.textContent = "SUCCESS:BENCH-B01";
+    });
+
+    document.querySelector("#profileForm").addEventListener("reset", () => {
+      queueMicrotask(() => {
+        const result = document.querySelector("#formResult");
+        result.dataset.state = "";
+        result.textContent = "等待提交";
+      });
+    });
+
+    function filteredTasks() {
+      const query = document.querySelector("#tableSearch").value.trim().toLowerCase();
+      const status = document.querySelector("#statusFilter").value;
+      return tasks
+        .filter((task) => !query || task.name.toLowerCase().includes(query))
+        .filter((task) => status === "all" || task.status === status)
+        .sort((left, right) => ascending ? left.name.localeCompare(right.name) : right.name.localeCompare(left.name));
+    }
+
+    function renderTable() {
+      const rows = filteredTasks();
+      const pageSize = 3;
+      const maxPage = Math.max(1, Math.ceil(rows.length / pageSize));
+      page = Math.min(page, maxPage);
+      const visible = rows.slice((page - 1) * pageSize, page * pageSize);
+      document.querySelector("#taskRows").innerHTML = visible.map((task) => `
+        <tr data-task="${task.name}" aria-selected="${task.name === selectedTask}">
+          <td><input type="radio" name="task-row" aria-label="选择 ${task.name}" ${task.name === selectedTask ? "checked" : ""}></td>
+          <td>${editing && task.name === selectedTask
+            ? `<input aria-label="编辑任务名称" value="${task.name}">`
+            : task.name}</td>
+          <td>${task.owner}</td>
+          <td>${task.status}</td>
+          <td>${task.score}</td>
+        </tr>`).join("");
+      document.querySelector("#pageStatus").textContent = `${page} / ${maxPage}`;
+      document.querySelector("#previousPage").disabled = page <= 1;
+      document.querySelector("#nextPage").disabled = page >= maxPage;
+      [...document.querySelectorAll("[name='task-row']")].forEach((radio) => radio.addEventListener("change", (event) => {
+        selectedTask = event.target.closest("tr").dataset.task;
+        editing = false;
+        renderTable();
+        document.querySelector("#tableResult").textContent = `SELECTED:${selectedTask}`;
+      }));
+    }
+
+    document.querySelector("#tableSearch").addEventListener("input", () => { page = 1; renderTable(); });
+    document.querySelector("#statusFilter").addEventListener("change", () => { page = 1; renderTable(); });
+    document.querySelector("#sortName").addEventListener("click", () => {
+      ascending = !ascending;
+      renderTable();
+      document.querySelector("#tableResult").textContent = `SORT:${ascending ? "ASC" : "DESC"}`;
+    });
+    document.querySelector("#previousPage").addEventListener("click", () => { page -= 1; renderTable(); });
+    document.querySelector("#nextPage").addEventListener("click", () => { page += 1; renderTable(); });
+    document.querySelector("#editSelected").addEventListener("click", () => {
+      if (!selectedTask) {
+        document.querySelector("#tableResult").textContent = "ERROR:NO-SELECTION";
+        return;
+      }
+      editing = true;
+      renderTable();
+    });
+    document.querySelector("#saveSelected").addEventListener("click", () => {
+      const input = document.querySelector("[aria-label='编辑任务名称']");
+      if (!selectedTask || !input) {
+        document.querySelector("#tableResult").textContent = "ERROR:NOT-EDITING";
+        return;
+      }
+      const task = tasks.find((item) => item.name === selectedTask);
+      task.name = input.value.trim();
+      selectedTask = task.name;
+      editing = false;
+      renderTable();
+      document.querySelector("#tableResult").dataset.state = "success";
+      document.querySelector("#tableResult").textContent = `SUCCESS:TABLE-SAVE:${selectedTask}`;
+      globalStatus.textContent = "SUCCESS:BENCH-B02";
+    });
+    document.querySelector("#asyncLoad").addEventListener("click", (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      document.querySelector("#tableResult").textContent = "LOADING";
+      setTimeout(() => {
+        button.disabled = false;
+        document.querySelector("#tableResult").dataset.state = "success";
+        document.querySelector("#tableResult").textContent = "SUCCESS:ASYNC-REFRESH:6";
+      }, 350);
+    });
+    renderTable();
+
+    document.querySelectorAll("[data-inner-tab]").forEach((button) => button.addEventListener("click", () => {
+      const tab = button.dataset.innerTab;
+      document.querySelectorAll("[data-inner-tab]").forEach((item) => item.setAttribute("aria-selected", String(item === button)));
+      document.querySelector("#inner-overview").hidden = tab !== "overview";
+      document.querySelector("#inner-evidence").hidden = tab !== "evidence";
+      document.querySelector("#componentResult").textContent = `TAB:${tab}`;
+    }));
+
+    const dialog = document.querySelector("#confirmDialog");
+    document.querySelector("#openModal").addEventListener("click", () => dialog.showModal());
+    document.querySelector("#cancelDialog").addEventListener("click", () => dialog.close());
+    document.querySelector("#confirmDialogAction").addEventListener("click", () => {
+      dialog.close();
+      document.querySelector("#componentResult").dataset.state = "success";
+      document.querySelector("#componentResult").textContent = "SUCCESS:MODAL-CONFIRMED";
+    });
+    document.querySelector("#openPrompt").addEventListener("click", () => {
+      const value = prompt("输入本地 benchmark 值", "BENCH-PROMPT");
+      document.querySelector("#componentResult").textContent = `PROMPT:${value ?? "DISMISSED"}`;
+    });
+    document.querySelector("#openJsConfirm").addEventListener("click", () => {
+      const accepted = confirm("确认执行本地 benchmark");
+      document.querySelector("#componentResult").textContent = `CONFIRM:${accepted ? "ACCEPTED" : "DISMISSED"}`;
+    });
+
+    document.querySelector("#dragItem").addEventListener("dragstart", (event) => {
+      event.dataTransfer.setData("text/plain", "BENCH-ITEM");
+    });
+    document.querySelector("#dropZone").addEventListener("dragover", (event) => event.preventDefault());
+    document.querySelector("#dropZone").addEventListener("drop", (event) => {
+      event.preventDefault();
+      const value = event.dataTransfer.getData("text/plain");
+      event.currentTarget.dataset.dropped = "true";
+      event.currentTarget.textContent = `DROPPED:${value}`;
+      document.querySelector("#componentResult").dataset.state = "success";
+      document.querySelector("#componentResult").textContent = `SUCCESS:DRAG:${value}`;
+    });
+    document.querySelector("#shortcutField").addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "a") {
+        document.querySelector("#componentResult").textContent = "SHORTCUT:SELECT-ALL";
+      }
+    });
+
+    const shadow = document.querySelector("#shadowHost").attachShadow({ mode: "open" });
+    shadow.innerHTML = `
+      <style>
+        button { min-height: 36px; padding: 7px 12px; border: 1px solid #147d43; border-radius: 6px; color: white; background: #147d43; }
+      </style>
+      <button id="shadowAction" type="button">执行 Shadow 动作</button>
+      <output id="shadowResult">SHADOW:READY</output>`;
+    shadow.querySelector("#shadowAction").addEventListener("click", () => {
+      shadow.querySelector("#shadowResult").textContent = "SUCCESS:SHADOW";
+      document.querySelector("#componentResult").dataset.state = "success";
+      document.querySelector("#componentResult").textContent = "SUCCESS:SHADOW";
+    });
+
+    document.querySelector("#consoleBurst").addEventListener("click", () => {
+      console.debug("BENCH-DEBUG", { scenario: "B04" });
+      console.info("BENCH-INFO", { count: 3 });
+      console.warn("BENCH-WARN", "expected benchmark warning");
+      console.error("BENCH-ERROR", "expected benchmark error");
+      document.querySelector("#diagnosticResult").dataset.state = "success";
+      document.querySelector("#diagnosticResult").textContent = "SUCCESS:CONSOLE:4";
+    });
+    document.querySelector("#newTab").addEventListener("click", () => {
+      open("codex-ui-complex-frame.html?standalone=1", "_blank", "noopener");
+      document.querySelector("#diagnosticResult").textContent = "OPENED:NEW-TAB";
+    });
+    document.querySelector("#uploadInput").addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      document.querySelector("#diagnosticResult").dataset.state = "success";
+      document.querySelector("#diagnosticResult").textContent = file
+        ? `SUCCESS:UPLOAD:${file.name}:${file.size}`
+        : "UPLOAD:EMPTY";
+    });
+  </script>
+</body>
+</html>

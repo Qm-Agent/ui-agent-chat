@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uiwarden.local/schemas/native-automation/session-v1.json",
+  "title": "AutomationSession",
+  "type": "object",
+  "required": ["version", "sessionId", "providerId", "app", "controlMode", "deliveryMode", "state", "artifactDir", "startedAt"],
+  "properties": {
+    "version": { "const": 1 },
+    "sessionId": { "type": "string", "minLength": 1 },
+    "providerId": { "$ref": "protocol-v1.json#/$defs/providerId" },
+    "app": { "$ref": "protocol-v1.json#/$defs/appSelector" },
+    "controlMode": { "$ref": "protocol-v1.json#/$defs/controlMode" },
+    "deliveryMode": { "$ref": "protocol-v1.json#/$defs/deliveryMode" },
+    "approvalPolicy": { "enum": ["none", "sensitive-actions"] },
+    "state": { "enum": ["active", "stopped", "failed"] },
+    "currentSnapshotId": { "type": ["string", "null"] },
+    "artifactDir": { "type": "string" },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "finishedAt": { "type": ["string", "null"], "format": "date-time" },
+    "eventCount": { "type": "integer", "minimum": 0 },
+    "snapshotSequence": { "type": "integer", "minimum": 0 },
+    "lastScreenshotPath": { "type": ["string", "null"] },
+    "lastWindowBounds": { "$ref": "protocol-v1.json#/$defs/bounds" },
+    "actionCount": { "type": "integer", "minimum": 0 },
+    "approvalCount": { "type": "integer", "minimum": 0 }
+  },
+  "additionalProperties": true
+}

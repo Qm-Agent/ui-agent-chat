@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dt-gui-agent.local/schemas/browser/manifest.schema.json",
+  "title": "dt-gui-browser Rep manifest",
+  "type": "object",
+  "required": ["artifactKind", "schemaVersion", "runId", "browserRunId", "runtimeVersion", "target", "startedAt", "finishedAt", "stopReason", "captureStopReason", "eventCount", "snapshotCount", "actionCount", "screenshotCount", "captureGapCount", "captureStatus"],
+  "properties": {
+    "artifactKind": { "const": "browser-rep" },
+    "schemaVersion": { "const": 1 },
+    "runId": { "type": "string", "minLength": 1 },
+    "browserRunId": { "type": "string", "pattern": "^browser-[0-9a-f-]{16,}$" },
+    "uiwardenSessionId": { "type": "string" },
+    "runtimeVersion": { "type": "string", "minLength": 1 },
+    "target": {
+      "type": "object",
+      "required": ["cdpUrl", "targetId", "title", "url"],
+      "properties": {
+        "cdpUrl": { "type": "string", "pattern": "^http://127\\.0\\.0\\.1:[0-9]+$" },
+        "targetId": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "url": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "finishedAt": { "type": "string", "format": "date-time" },
+    "stopReason": { "type": "string", "minLength": 1 },
+    "captureStopReason": { "type": "string", "minLength": 1 },
+    "eventCount": { "type": "integer", "minimum": 1 },
+    "snapshotCount": { "type": "integer", "minimum": 0 },
+    "actionCount": { "type": "integer", "minimum": 0 },
+    "screenshotCount": { "type": "integer", "minimum": 0 },
+    "captureGapCount": { "type": "integer", "minimum": 0 },
+    "consoleCount": { "type": "integer", "minimum": 0 },
+    "pageErrorCount": { "type": "integer", "minimum": 0 },
+    "downloadCount": { "type": "integer", "minimum": 0 },
+    "dialogCount": { "type": "integer", "minimum": 0 },
+    "targetCount": { "type": "integer", "minimum": 1 },
+    "captureStatus": { "enum": ["complete", "incomplete"] }
+  },
+  "additionalProperties": true
+}

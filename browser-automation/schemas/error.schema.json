@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dt-gui-agent.local/schemas/browser/error.schema.json",
+  "title": "dt-gui-browser CLI error envelope",
+  "type": "object",
+  "required": ["ok", "error"],
+  "properties": {
+    "ok": { "const": false },
+    "error": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "enum": ["INVALID_ARGUMENT", "SESSION_NOT_FOUND", "SESSION_STOPPED", "SESSION_BUSY", "TARGET_NOT_FOUND", "TARGET_GONE", "TARGET_NOT_ALLOWED", "TARGET_BUSY", "STALE_SNAPSHOT", "ELEMENT_NOT_FOUND", "UNSUPPORTED_ACTION", "HANDOFF_REQUIRED", "HUMAN_CONTROL_ACTIVE", "OBSERVE_ONLY", "NAVIGATION_BLOCKED", "NAVIGATION_FAILED", "ACTION_FAILED", "CAPTURE_FAILED", "CDP_UNAVAILABLE", "CDP_TIMEOUT", "CDP_COMMAND_FAILED", "CDP_INVALID_RESPONSE", "PAGE_EVALUATION_FAILED", "STORAGE_CORRUPTED", "INTERNAL"] },
+        "message": { "type": "string", "minLength": 1 },
+        "details": {}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

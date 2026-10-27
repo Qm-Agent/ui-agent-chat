@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dt-gui-agent.local/schemas/browser/snapshot.schema.json",
+  "title": "dt-gui-browser semantic snapshot",
+  "type": "object",
+  "required": ["version", "snapshotId", "sessionId", "sequence", "targetId", "url", "title", "readyState", "viewport", "text", "elements", "screenshotPath", "captureGaps", "capturedAt"],
+  "properties": {
+    "version": { "const": 1 },
+    "snapshotId": { "type": "string", "pattern": "^snapshot-[0-9a-f-]{16,}$" },
+    "sessionId": { "type": "string", "pattern": "^browser-[0-9a-f-]{16,}$" },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "targetId": { "type": "string", "minLength": 1 },
+    "url": { "type": "string" },
+    "title": { "type": "string" },
+    "readyState": { "type": "string" },
+    "viewport": {
+      "type": "object",
+      "required": ["width", "height", "scrollX", "scrollY", "devicePixelRatio"],
+      "properties": {
+        "width": { "type": "number", "minimum": 0 },
+        "height": { "type": "number", "minimum": 0 },
+        "scrollX": { "type": "number" },
+        "scrollY": { "type": "number" },
+        "devicePixelRatio": { "type": "number", "exclusiveMinimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "text": { "type": "string" },
+    "elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["elementId", "tag", "role", "name", "secure", "enabled", "actions", "riskLevel", "rect"],
+        "properties": {
+          "elementId": { "type": "string", "pattern": "^web-[0-9a-f]{16}$" },
+          "tag": { "type": "string" },
+          "role": { "type": "string" },
+          "name": { "type": "string" },
+          "value": { "type": "string" },
+          "secure": { "type": "boolean" },
+          "enabled": { "type": "boolean" },
+          "checked": { "type": "boolean" },
+          "actions": { "type": "array", "items": { "enum": ["click", "set-value", "type-text", "select-option", "hover", "upload-file", "drag", "drop"] }, "uniqueItems": true },
+          "riskLevel": { "enum": ["normal", "high"] },
+          "rect": {
+            "type": "object",
+            "required": ["x", "y", "width", "height"],
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "width": { "type": "number", "minimum": 0 },
+              "height": { "type": "number", "minimum": 0 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "screenshotPath": { "type": "string", "minLength": 1 },
+    "captureGaps": { "type": "array", "items": { "type": ["string", "object"] } },
+    "capturedAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gui-computer</title>
+    <link rel="stylesheet" href="browser.css" />
+  </head>
+  <body>
+    <header class="app-bar">
+      <div class="brand"><img class="brand-mark" src="build/icon.png" alt="" /><strong>gui-computer</strong></div>
+      <div class="connection"><span class="status-dot"></span><span>本机控制桥</span></div>
+    </header>
+    <div class="tabs-bar">
+      <div id="tabs" class="tabs"></div>
+      <button id="all-tabs" class="icon-button tab-action-button all-tabs-button" type="button" title="查看所有标签页" aria-label="查看所有标签页">⌄<span id="tab-count"></span></button>
+      <button id="new-tab" class="icon-button tab-action-button new-tab-button" type="button" title="新建标签页" aria-label="新建标签页">+</button>
+      <button id="new-window" class="icon-button tab-action-button new-window-button" type="button" title="新建窗口" aria-label="新建窗口">▣</button>
+    </div>
+    <nav class="navigation" aria-label="浏览器导航">
+      <button id="back" class="icon-button" type="button" title="后退" aria-label="后退">←</button>
+      <button id="forward" class="icon-button" type="button" title="前进" aria-label="前进">→</button>
+      <button id="reload" class="icon-button" type="button" title="刷新" aria-label="刷新">↻</button>
+      <form id="address-form" class="address-form">
+        <span class="security-mark">●</span>
+        <input id="address" type="text" autocomplete="off" spellcheck="false" aria-label="地址" />
+      </form>
+      <button id="bookmark-toggle" class="icon-button" type="button" title="添加书签" aria-label="添加书签">☆</button>
+      <button id="library-toggle" class="icon-button" type="button" title="书签与历史记录" aria-label="书签与历史记录">◷</button>
+      <button id="find-toggle" class="icon-button" type="button" title="页内查找" aria-label="页内查找">⌕</button>
+      <form id="find-form" class="find-form" hidden>
+        <input id="find-input" type="text" autocomplete="off" aria-label="页内查找内容" placeholder="查找" />
+        <button id="find-previous" type="button" title="上一个">↑</button>
+        <button id="find-next" type="submit" title="下一个">↓</button>
+        <button id="find-close" type="button" title="关闭查找">×</button>
+      </form>
+      <button id="downloads" class="icon-button download-button" type="button" title="打开下载目录" aria-label="打开下载目录">⇩<span id="download-count"></span></button>
+      <div class="zoom-controls" aria-label="页面缩放"><button id="zoom-out" type="button" title="缩小">−</button><button id="zoom-reset" type="button" title="恢复 100%">100%</button><button id="zoom-in" type="button" title="放大">+</button></div>
+      <button id="clear-cookies" class="icon-button" type="button" title="清除全部 Cookie" aria-label="清除全部 Cookie">⌫</button>
+      <button id="devtools" class="devtools-button" type="button" title="开发者工具：请求与控制台">F12</button>
+      <button id="control-state" class="control-state" type="button" disabled>可用</button>
+    </nav>
+    <section id="library-panel" class="library-panel" hidden>
+      <header class="library-header">
+        <div class="library-tabs" role="tablist">
+          <button id="tabs-tab" type="button" role="tab">标签页</button>
+          <button id="bookmarks-tab" class="active" type="button" role="tab">书签</button>
+          <button id="history-tab" type="button" role="tab">历史记录</button>
+        </div>
+        <button id="clear-history" class="library-command" type="button" hidden>清除历史</button>
+        <button id="library-close" class="library-close" type="button" title="关闭" aria-label="关闭">×</button>
+      </header>
+      <div id="library-list" class="library-list"></div>
+    </section>
+    <main id="browser-slot" class="browser-slot"></main>
+    <script src="browser.js"></script>
+  </body>
+</html>

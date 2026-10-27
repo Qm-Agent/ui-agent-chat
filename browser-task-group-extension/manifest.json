@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "UIWarden Browser Bridge",
+  "version": "0.9.1",
+  "description": "Connects UIWarden to existing Chromium tabs and creates isolated task groups.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz+jDAA8cbUGQh2WM4FvsLQiw8ZKU4kzPEJX2ZEfJMjccD5sQUGjGRLzBWCVdze3El/dJv3hSxVkmGRfl93n57xIlPBAznJJe7Bs2DljDb2Je9EBcNrMzXDCWndHar0DfztGDeaWwz5pv77QLqviut62RfhRAL2NZDlgb9W+BHOy21tfmAYm9ddX7JXLu2HjJJUckG96KimkoYZObKcGP6Ta8ONmBH5B85NFCcSOI0l7rION7gJL/59lxJRkSHIH2TtRHEHp1iePiJ4zOTSMxmYiULSTdDHgdmWbSp6ehMtvW5qL9+uhKZUvZnoibDPcfhV0VHVf/smrThGoVQX4L6QIDAQAB",
+  "permissions": [
+    "tabs",
+    "tabGroups",
+    "debugger",
+    "storage",
+    "alarms"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "matches": [
+      "http://127.0.0.1/*",
+      "http://localhost/*"
+    ]
+  }
+}

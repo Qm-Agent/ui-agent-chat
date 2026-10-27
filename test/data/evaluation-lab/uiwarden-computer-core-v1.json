@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1.0",
+  "id": "uiwarden-computer-core-v1",
+  "name": "UIWarden Computer 核心能力评测集 v1",
+  "description": "从 UIWarden 既有 Computer benchmark 提取的可重复核心集，覆盖计算器、Excel、PowerPoint、DTCoder CN 和备忘录。",
+  "cases": [
+    {
+      "id": "C01",
+      "name": "计算器计算 1+100",
+      "category": "基础 AX",
+      "compatibleTargets": ["computer"],
+      "instruction": "打开 macOS 计算器，严格按“清除 → 1 → 加 → 1 → 0 → 0 → 等于”执行。通过最新 AX 状态或截图确认最终显示 101。只有确认后，最终回复逐字输出 CALCULATOR_RESULT=101。",
+      "tags": ["computer", "core", "calculator", "pr-smoke"],
+      "timeoutMs": 240000,
+      "passThreshold": 80,
+      "enabled": true,
+      "assertions": [
+        {"id": "completed", "label": "执行完成", "evaluator": "run-completed", "weight": 30, "required": true, "params": {}},
+        {"id": "oracle", "label": "计算结果正确", "evaluator": "summary-contains", "weight": 50, "required": true, "params": {"terms": ["CALCULATOR_RESULT=101"], "matchMode": "all"}},
+        {"id": "failure", "label": "没有失败信号", "evaluator": "summary-not-contains", "weight": 10, "required": true, "params": {"terms": ["无法执行", "未验证"], "matchMode": "all"}},
+        {"id": "artifacts", "label": "保留执行证据", "evaluator": "artifact-count", "weight": 10, "required": true, "params": {"min": 1}}
+      ]
+    },
+    {
+      "id": "C02",
+      "name": "Excel 两行求和",
+      "category": "Office 表格",
+      "compatibleTargets": ["computer"],
+      "instruction": "打开 Microsoft Excel 并新建临时空白工作簿，确认不是用户已有工作簿后再操作。在 B2 输入 10，B3 输入 20，B4 输入公式 =SUM(B2:B3)，通过最新观察确认公式结果为 30。完成后关闭该临时工作簿并选择不保存，不要触碰其他工作簿。最终回复只有验证和清理均完成后才逐字包含 EXCEL_SUM=30 和 TEMP_WORKBOOK_CLOSED_WITHOUT_SAVE。",
+      "tags": ["computer", "core", "excel", "pr-smoke"],
+      "timeoutMs": 420000,
+      "passThreshold": 80,
+      "enabled": true,
+      "assertions": [
+        {"id": "completed", "label": "执行完成", "evaluator": "run-completed", "weight": 30, "required": true, "params": {}},
+        {"id": "oracle", "label": "Excel 结果与清理正确", "evaluator": "summary-contains", "weight": 50, "required": true, "params": {"terms": ["EXCEL_SUM=30", "TEMP_WORKBOOK_CLOSED_WITHOUT_SAVE"], "matchMode": "all"}},
+        {"id": "failure", "label": "没有失败信号", "evaluator": "summary-not-contains", "weight": 10, "required": true, "params": {"terms": ["无法执行", "未验证"], "matchMode": "all"}},
+        {"id": "artifacts", "label": "保留执行证据", "evaluator": "artifact-count", "weight": 10, "required": true, "params": {"min": 1}}
+      ]
+    },
+    {
+      "id": "C03",
+      "name": "PowerPoint 标题页与新增页",
+      "category": "Office 画布",
+      "compatibleTargets": ["computer"],
+      "instruction": "打开 Microsoft PowerPoint 并新建临时演示文稿，确认不是用户已有演示文稿。首页标题输入 UIWarden Computer Benchmark，副标题输入 Temporary Presentation，再新增一页。通过最新观察确认首页文字和总页数为 2。完成后关闭临时演示文稿并选择不保存。最终回复只有验证和清理均完成后才逐字包含 POWERPOINT_SLIDES=2 和 TEMP_PRESENTATION_CLOSED_WITHOUT_SAVE。",
+      "tags": ["computer", "core", "powerpoint"],
+      "timeoutMs": 480000,
+      "passThreshold": 80,
+      "enabled": true,
+      "assertions": [
+        {"id": "completed", "label": "执行完成", "evaluator": "run-completed", "weight": 30, "required": true, "params": {}},
+        {"id": "oracle", "label": "PowerPoint 结果与清理正确", "evaluator": "summary-contains", "weight": 50, "required": true, "params": {"terms": ["POWERPOINT_SLIDES=2", "TEMP_PRESENTATION_CLOSED_WITHOUT_SAVE"], "matchMode": "all"}},
+        {"id": "failure", "label": "没有失败信号", "evaluator": "summary-not-contains", "weight": 10, "required": true, "params": {"terms": ["无法执行", "未验证"], "matchMode": "all"}},
+        {"id": "artifacts", "label": "保留执行证据", "evaluator": "artifact-count", "weight": 10, "required": true, "params": {"min": 1}}
+      ]
+    },
+    {
+      "id": "C04",
+      "name": "DTCoder CN 面板与模型菜单只读",
+      "category": "Electron 桌面应用",
+      "compatibleTargets": ["computer"],
+      "instruction": "打开 DTCoder CN，只读展开文件、终端和模型菜单，读取当前可见的模型选项。不得发送消息、不得运行终端命令、不得切换模型、不得修改文件或设置。通过最新观察确认三个面板或菜单状态，并在最终回复列出实际观察到的模型选项；只有全过程无写操作且证据完整时才逐字包含 DTCODER_READ_ONLY_VERIFIED。",
+      "tags": ["computer", "core", "dtcoder", "read-only"],
+      "timeoutMs": 360000,
+      "passThreshold": 80,
+      "enabled": true,
+      "assertions": [
+        {"id": "completed", "label": "执行完成", "evaluator": "run-completed", "weight": 30, "required": true, "params": {}},
+        {"id": "oracle", "label": "DTCoder 只读巡检完成", "evaluator": "summary-contains", "weight": 50, "required": true, "params": {"terms": ["DTCODER_READ_ONLY_VERIFIED"], "matchMode": "all"}},
+        {"id": "failure", "label": "没有失败或写操作信号", "evaluator": "summary-not-contains", "weight": 10, "required": true, "params": {"terms": ["无法执行", "未验证", "已切换模型", "已发送消息"], "matchMode": "all"}},
+        {"id": "artifacts", "label": "保留执行证据", "evaluator": "artifact-count", "weight": 10, "required": true, "params": {"min": 1}}
+      ]
+    },
+    {
+      "id": "C05",
+      "name": "备忘录结构化临时内容",
+      "category": "原生文本应用",
+      "compatibleTargets": ["computer"],
+      "instruction": "打开备忘录，新建标题为 UIWarden Computer Benchmark Temporary 的临时备忘录，输入两段正文和三个核对项，勾选第二项。通过最新观察确认标题、正文、核对项和勾选状态。随后仅将该临时备忘录移入最近删除，不永久删除，不操作其他笔记。最终回复只有内容验证和清理均完成后才逐字包含 NOTES_TEMPORARY_CONTENT_VERIFIED 和 NOTES_CLEANUP_VERIFIED。",
+      "tags": ["computer", "core", "notes"],
+      "timeoutMs": 420000,
+      "passThreshold": 80,
+      "enabled": true,
+      "assertions": [
+        {"id": "completed", "label": "执行完成", "evaluator": "run-completed", "weight": 30, "required": true, "params": {}},
+        {"id": "oracle", "label": "备忘录内容与清理正确", "evaluator": "summary-contains", "weight": 50, "required": true, "params": {"terms": ["NOTES_TEMPORARY_CONTENT_VERIFIED", "NOTES_CLEANUP_VERIFIED"], "matchMode": "all"}},
+        {"id": "failure", "label": "没有失败信号", "evaluator": "summary-not-contains", "weight": 10, "required": true, "params": {"terms": ["无法执行", "未验证"], "matchMode": "all"}},
+        {"id": "artifacts", "label": "保留执行证据", "evaluator": "artifact-count", "weight": 10, "required": true, "params": {"min": 1}}
+      ]
+    }
+  ]
+}

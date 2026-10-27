@@ -1,0 +1,66 @@
+{
+  "appId": "com.uiwarden.desktop",
+  "productName": "UIWarden",
+  "directories": {
+    "output": "release"
+  },
+  "electronDist": "node_modules/electron/dist",
+  "files": [
+    "main.cjs",
+    "application-menu.cjs",
+    "window-lifecycle.cjs",
+    "embedded-browser.cjs",
+    "embedded-browser-url.cjs",
+    "native-window-stream.cjs",
+    "picture-in-picture.cjs",
+    "pip-preload.cjs",
+    "pip-renderer.js",
+    "pip.html",
+    "preload.cjs",
+    "package.json"
+  ],
+  "extraResources": [
+    { "from": "../dist", "to": "dist" },
+    { "from": "runtime/package-resources/ui-test-assistant-skill", "to": "ui-test-assistant-skill" },
+    { "from": "runtime/package-resources/dt-gui-computer-skill", "to": "dt-gui-computer-skill" },
+    { "from": "runtime/package-resources/dt-gui-browser-skill", "to": "dt-gui-browser-skill" },
+    { "from": "runtime/package-resources/browser-task-group-extension", "to": "browser-task-group-extension" },
+    {
+      "from": "../test/fixtures/browser",
+      "to": "evaluation-bench-assets",
+      "filter": [
+        "codex-ui-complex-fixture.html",
+        "codex-ui-complex-frame.html",
+        "codex-ui-benchmark-download.txt"
+      ]
+    },
+    { "from": "runtime/package-resources/browser-automation", "to": "browser-automation" },
+    {
+      "from": "../vendor/browser-use",
+      "to": "vendor/browser-use",
+      "filter": ["browser_use-3.1.6-*.whl", "README.md"]
+    },
+    { "from": "../LICENSE", "to": "LICENSE" },
+    { "from": "../THIRD_PARTY_NOTICES.md", "to": "THIRD_PARTY_NOTICES.md" },
+    { "from": "../LICENSES/browser-use-MIT.txt", "to": "LICENSES/browser-use-MIT.txt" },
+    { "from": "runtime/ui-test-runtime", "to": "ui-test-runtime", "filter": ["**/*"] },
+    { "from": "../package.json", "to": "package.json" },
+    { "from": "../native-automation", "to": "native-automation", "filter": ["dt-gui-computer", "dt-gui-computer.cmd", "dist/**/*", "shared-runtime/**/*", "schemas/**/*"] },
+    { "from": "../native-automation/target/native-provider", "to": "native-automation", "filter": ["**/*"] },
+    { "from": "runtime", "to": "runtime", "filter": ["node", "node.exe", "node-runtime.json", "agents/**/*"] },
+    { "from": "runtime/server-node-modules", "to": "node_modules", "filter": ["**/*"] }
+  ],
+  "mac": {
+    "category": "public.app-category.developer-tools",
+    "icon": "build/icon.icns",
+    "signIgnore": [
+      ".*\\.pak$"
+    ],
+    "target": ["dir"]
+  },
+  "win": {
+    "icon": "build/icon.png",
+    "target": ["nsis"]
+  },
+  "npmRebuild": false
+}

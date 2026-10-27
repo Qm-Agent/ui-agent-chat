@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; img-src 'self' data: http://127.0.0.1:* http://localhost:*; style-src 'unsafe-inline'; script-src 'self'"
+  />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UIWarden 画中画</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #171a1f; }
+    .toolbar {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      width: 100%;
+      height: 34px;
+      padding: 0 5px 0 10px;
+      color: #dbe1e8;
+      background: rgba(30, 34, 40, .96);
+      border-bottom: 1px solid #343a43;
+      -webkit-app-region: drag;
+    }
+    .identity { display: flex; align-items: baseline; min-width: 0; gap: 6px; }
+    .identity strong, .identity span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .identity strong { flex: 0 1 auto; font-size: 10px; font-weight: 650; }
+    .identity span { flex: 1 1 auto; color: #8994a2; font-size: 9px; }
+    .status {
+      margin-right: 3px;
+      padding: 2px 5px;
+      color: #aeb7c3;
+      background: #303640;
+      border-radius: 4px;
+      font-size: 8px;
+      font-weight: 650;
+      -webkit-app-region: no-drag;
+    }
+    .status[data-status="running"] { color: #8dd9ad; background: #1d4934; }
+    .status[data-status="failed"] { color: #ffaaa5; background: #542b2d; }
+    .status[data-status="waiting-approval"] { color: #f3d483; background: #514523; }
+    .toolbarActions { display: inline-flex; align-items: center; gap: 1px; -webkit-app-region: no-drag; }
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      color: #aeb7c3;
+      background: transparent;
+      border: 0;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:hover { color: #fff; background: #3a414c; }
+    button[data-active="true"] { color: #8dd9ad; background: #254938; }
+    button:disabled { opacity: .5; cursor: wait; }
+    .surface {
+      position: absolute;
+      inset: 34px 0 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: #111419;
+    }
+    .surface[data-source="embedded-browser"] { pointer-events: none; }
+    .surface img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 100vw;
+      max-height: calc(100vh - 34px);
+      object-fit: contain;
+      background: #111419;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .surface[data-source="native-stream"][data-interaction="enabled"] { cursor: crosshair; }
+    .surface[data-busy="true"] { cursor: progress; }
+    .empty { color: #77818e; font-size: 10px; }
+    .live {
+      position: absolute;
+      right: 7px;
+      bottom: 6px;
+      z-index: 2;
+      padding: 2px 5px;
+      color: #adb7c4;
+      background: rgba(20, 23, 28, .78);
+      border: 1px solid rgba(113, 124, 139, .35);
+      border-radius: 4px;
+      font-size: 8px;
+      pointer-events: none;
+    }
+    .live[data-status="live"]::before {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      margin-right: 4px;
+      background: #52c985;
+      border-radius: 50%;
+      content: "";
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <div class="identity">
+      <strong data-role="title">UI 操作</strong>
+      <span data-role="subtitle">等待执行画面</span>
+    </div>
+    <span class="status" data-role="status">待机</span>
+    <div class="toolbarActions">
+      <button type="button" data-action="interaction" title="操作画中画" aria-pressed="false" hidden>⌖</button>
+      <button type="button" data-action="return" title="回到 UIWarden">↗</button>
+      <button type="button" data-action="close" title="关闭画中画">×</button>
+    </div>
+  </header>
+  <main class="surface" data-role="surface" data-source="snapshot" data-interaction="disabled">
+    <img data-role="snapshot" alt="UI 操作执行画面" hidden />
+    <span class="empty" data-role="empty">等待执行画面</span>
+    <span class="live" data-role="live" hidden>等待画面</span>
+  </main>
+  <script src="./pip-renderer.js"></script>
+</body>
+</html>

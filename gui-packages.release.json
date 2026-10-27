@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "releaseTrain": "0.6.1",
+  "protocolVersion": 1,
+  "registry": "https://registry.npmjs.org",
+  "publishEnabled": false,
+  "tag": "latest",
+  "packages": [
+    {
+      "id": "runtime",
+      "name": "@uiwarden/dt-gui-runtime",
+      "directory": "gui-runtime"
+    },
+    {
+      "id": "browser",
+      "name": "@uiwarden/dt-gui-browser",
+      "directory": "browser-automation"
+    },
+    {
+      "id": "computer",
+      "name": "@uiwarden/dt-gui-computer",
+      "directory": "native-automation"
+    }
+  ]
+}

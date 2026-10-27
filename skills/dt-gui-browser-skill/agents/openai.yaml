@@ -1,0 +1,4 @@
+interface:
+  display_name: "DT GUI Browser"
+  short_description: "通过语义快照作用域的原子命令安全控制当前浏览器页面操作"
+  default_prompt: "Use $dt-gui-browser-skill to operate the current controlled browser page."

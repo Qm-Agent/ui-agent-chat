@@ -1,0 +1,22 @@
+{
+  "skip_rules": [
+    {
+      "id": "example-semantic-tenant-ui",
+      "reason": "示例：跳过右上角租户相关控件（按需改名启用）",
+      "scope": "all",
+      "semantic_description": "页面右上角区域与租户切换、租户管理相关的入口或下拉项"
+    },
+    {
+      "id": "example-structured-label",
+      "reason": "示例：按可见文案子串匹配",
+      "scope": "all",
+      "label_regex": "仅作示例|do-not-match"
+    }
+  ],
+
+  "_doc_equivalence": "以下设置在 ExplorationConfig 中配置，也可通过命令行参数传入",
+  "equivalence_settings": {
+    "max_equivalent_siblings": 2,
+    "url_equivalence_enabled": true
+  }
+}

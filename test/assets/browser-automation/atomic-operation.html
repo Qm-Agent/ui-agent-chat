@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DT GUI Browser Operation</title>
+    <style>
+      body { max-width: 680px; margin: 48px auto; font: 16px/1.5 system-ui, sans-serif; color: #20252b; }
+      label { display: grid; gap: 8px; margin: 24px 0; }
+      input, button { box-sizing: border-box; min-height: 42px; padding: 9px 12px; font: inherit; }
+      button { width: 120px; cursor: pointer; }
+      #status { margin-top: 24px; font-weight: 650; }
+    </style>
+  </head>
+  <body>
+    <h1>Atomic browser operation</h1>
+    <label for="name">Name<input id="name" autocomplete="off"></label>
+    <button id="apply" type="button">Apply</button>
+    <p id="status" aria-live="polite">Waiting</p>
+    <script>
+      document.querySelector("#apply").addEventListener("click", () => {
+        document.querySelector("#status").textContent = `Done: ${document.querySelector("#name").value}`;
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+# 真实凭据只保存在本机 config/.env；仓库和安装包仅提供空值 .env.example。
+config/.env
+config/.env.*
+!config/.env.example
+
+.skill-output/
+.logs/
+.pytest_cache/
+.vscode/
+logs/
+.claude/
+.cursor/
+
+# OpenSpec 变更目录（本地工作流产物）
+openspec/
+
+# Python 字节码缓存（全仓库任意路径下的目录与文件）
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 测试用例（全仓库：tests 包目录 + 常见单测命名）
+**/tests/
+test/
+test_*.py
+*_test.py
+
+# 用户本地上下文资料。打包暂存脚本也会执行相同隔离。
+config/perference_context/*
+!config/perference_context/.gitkeep
+config/prompt_context/*
+!config/prompt_context/.gitkeep
+!config/prompt_context/global_readme.md

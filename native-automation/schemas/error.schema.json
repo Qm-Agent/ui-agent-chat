@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uiwarden.local/schemas/native-automation/error-v1.json",
+  "title": "NativeAutomationError",
+  "type": "object",
+  "required": ["ok", "error"],
+  "properties": {
+    "ok": { "const": false },
+    "error": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "enum": [
+            "INVALID_ARGUMENT", "UNSUPPORTED_PROVIDER", "PROVIDER_UNAVAILABLE", "PERMISSION_DENIED",
+            "APP_NOT_FOUND", "SESSION_NOT_FOUND", "SESSION_STOPPED", "DESKTOP_BUSY", "STALE_SNAPSHOT", "ELEMENT_NOT_FOUND", "NO_PROGRESS",
+            "APPROVAL_REQUIRED", "APPROVAL_INVALID", "HANDOFF_REQUIRED", "PROTECTED_SURFACE",
+            "UNSUPPORTED_ACTION", "STORAGE_CORRUPTED", "INTERNAL"
+          ]
+        },
+        "message": { "type": "string" },
+        "details": { "type": "object" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

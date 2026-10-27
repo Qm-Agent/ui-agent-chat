@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dt-gui-agent.local/schemas/browser/session.schema.json",
+  "title": "dt-gui-browser execution session",
+  "type": "object",
+  "required": ["version", "runtimeVersion", "sessionId", "runId", "cdpUrl", "targetId", "controlMode", "state", "artifactDir", "startedAt", "eventCount", "snapshotSequence", "actionCount", "screenshotCount", "captureGapCount"],
+  "properties": {
+    "version": { "const": 1 },
+    "runtimeVersion": { "type": "string", "minLength": 1 },
+    "sessionId": { "type": "string", "pattern": "^browser-[0-9a-f-]{16,}$" },
+    "runId": { "type": "string", "minLength": 1 },
+    "uiwardenSessionId": { "type": "string", "minLength": 1 },
+    "cdpUrl": { "type": "string", "pattern": "^http://(?:127\\.0\\.0\\.1|localhost):[0-9]+(?:/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*)?$" },
+    "targetId": { "type": "string", "minLength": 1 },
+    "targetTitle": { "type": "string" },
+    "targetUrl": { "type": "string" },
+    "uploadRoots": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "pendingDialog": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": "string" },
+        "message": { "type": "string" },
+        "defaultPrompt": { "type": "string" },
+        "openedAt": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "targetSelection": { "enum": ["uiwarden", "agent"] },
+    "allowedTargetIds": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "discoveredTargetIds": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "targetRelations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["openerTargetId", "discoveredAt"],
+        "properties": {
+          "openerTargetId": { "type": "string", "minLength": 1 },
+          "discoveredAt": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "controlMode": { "enum": ["observe", "agent-control", "human-control"] },
+    "state": { "enum": ["active", "stopped", "failed"] },
+    "currentSnapshotId": { "type": ["string", "null"] },
+    "artifactDir": { "type": "string", "minLength": 1 },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "finishedAt": { "type": ["string", "null"], "format": "date-time" },
+    "stopReason": { "type": ["string", "null"] },
+    "eventCount": { "type": "integer", "minimum": 0 },
+    "snapshotSequence": { "type": "integer", "minimum": 0 },
+    "actionCount": { "type": "integer", "minimum": 0 },
+    "screenshotCount": { "type": "integer", "minimum": 0 },
+    "captureGapCount": { "type": "integer", "minimum": 0 },
+    "consoleCount": { "type": "integer", "minimum": 0 },
+    "pageErrorCount": { "type": "integer", "minimum": 0 },
+    "downloadCount": { "type": "integer", "minimum": 0 },
+    "dialogCount": { "type": "integer", "minimum": 0 },
+    "targetCount": { "type": "integer", "minimum": 1 }
+  },
+  "additionalProperties": true
+}

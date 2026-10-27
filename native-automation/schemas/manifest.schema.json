@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uiwarden.local/schemas/native-automation/manifest-v1.json",
+  "title": "UIWarden Native Rep Manifest",
+  "type": "object",
+  "required": ["artifactKind", "schemaVersion", "runId", "nativeRunId", "providerId", "app", "deliveryMode", "startedAt", "finishedAt", "stopReason", "captureStopReason", "eventCount", "snapshotCount", "actionCount", "approvalCount"],
+  "properties": {
+    "artifactKind": { "const": "native-rep" },
+    "schemaVersion": { "const": 1 },
+    "runId": { "type": "string" },
+    "nativeRunId": { "type": "string" },
+    "providerId": { "type": "string" },
+    "app": { "type": "object" },
+    "deliveryMode": { "$ref": "protocol-v1.json#/$defs/deliveryMode" },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "finishedAt": { "type": "string", "format": "date-time" },
+    "stopReason": { "type": "string" },
+    "captureStopReason": { "type": "string" },
+    "eventCount": { "type": "integer", "minimum": 1 },
+    "snapshotCount": { "type": "integer", "minimum": 0 },
+    "actionCount": { "type": "integer", "minimum": 0 },
+    "approvalCount": { "type": "integer", "minimum": 0 }
+  },
+  "additionalProperties": true
+}

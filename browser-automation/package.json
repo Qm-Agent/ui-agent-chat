@@ -1,0 +1,28 @@
+{
+  "name": "@uiwarden/dt-gui-browser",
+  "private": true,
+  "version": "0.6.1",
+  "description": "Snapshot-scoped atomic browser control CLI for DT GUI Agent",
+  "type": "module",
+  "bin": {
+    "dt-gui-browser": "cli.mjs"
+  },
+  "files": [
+    "bin",
+    "cli.mjs",
+    "README.md",
+    "src",
+    "schemas",
+    "shared-runtime"
+  ],
+  "scripts": {
+    "prepack": "node ../scripts/gui-packages.mjs prepare browser"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ws": "^8.21.0"
+  },
+  "license": "Apache-2.0"
+}

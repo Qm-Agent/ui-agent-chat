@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dt-gui-agent.local/schemas/browser/protocol.schema.json",
+  "title": "dt-gui-browser protocol descriptor",
+  "type": "object",
+  "required": ["protocolVersion", "runtimeVersion"],
+  "properties": {
+    "protocolVersion": { "const": 1 },
+    "runtimeVersion": { "type": "string", "minLength": 1 },
+    "session": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "observation": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "navigation": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "actions": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "safeguards": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "mcp": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

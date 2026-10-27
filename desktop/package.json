@@ -1,0 +1,18 @@
+{
+  "name": "ui-agent-chat-desktop",
+  "version": "0.12.5",
+  "description": "UIWarden (ui-agent-chat) desktop client — 在用户本机运行 server 与浏览器执行环境",
+  "author": "UIWarden",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "dev": "UI_AGENT_DESKTOP_DEV=true electron .",
+    "start": "electron .",
+    "pack:mac": "npm --prefix .. run build && npm --prefix .. run prepare:ui-test-runtime -- --platform=darwin --arch=$(node -p 'process.arch') && node scripts/prepare-package.cjs && node scripts/mac-icon.cjs build && electron-builder --mac dir --config electron-builder.json && bash scripts/sign-local-app.sh release/mac-$(node -p 'process.arch')/UIWarden.app && bash scripts/create-local-dmg.sh release/mac-$(node -p 'process.arch')/UIWarden.app release/UIWarden-${npm_package_version}-$(node -p 'process.arch').dmg \"UIWarden ${npm_package_version}\" && bash scripts/verify-install-dmg.sh release/UIWarden-${npm_package_version}-$(node -p 'process.arch').dmg",
+    "pack:win": "npm --prefix .. run build && npm --prefix .. run prepare:ui-test-runtime -- --platform=win32 --arch=x64 && node scripts/prepare-package.cjs && electron-builder --win nsis --config electron-builder.json"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.0"
+  }
+}

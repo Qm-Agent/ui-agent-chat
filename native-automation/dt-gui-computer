@@ -1,0 +1,23 @@
+#!/bin/sh
+set -eu
+SOURCE=$0
+while [ -h "$SOURCE" ]; do
+  SOURCE_DIR=$(CDPATH= cd -- "$(dirname -- "$SOURCE")" && pwd)
+  LINK_TARGET=$(readlink "$SOURCE")
+  case "$LINK_TARGET" in
+    /*) SOURCE=$LINK_TARGET ;;
+    *) SOURCE=$SOURCE_DIR/$LINK_TARGET ;;
+  esac
+done
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$SOURCE")" && pwd)
+NODE_BIN=${DT_GUI_COMPUTER_NODE:-}
+if [ -z "$NODE_BIN" ] && [ -x "$SCRIPT_DIR/../runtime/node" ]; then
+  NODE_BIN="$SCRIPT_DIR/../runtime/node"
+fi
+if [ -z "$NODE_BIN" ] && [ -x "$SCRIPT_DIR/../desktop/runtime/node" ]; then
+  NODE_BIN="$SCRIPT_DIR/../desktop/runtime/node"
+fi
+if [ -z "$NODE_BIN" ]; then
+  NODE_BIN=node
+fi
+exec "$NODE_BIN" "$SCRIPT_DIR/dist/cli.js" "$@"
